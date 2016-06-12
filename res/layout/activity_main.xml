@@ -1,70 +1,64 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:background="@drawable/backgroundmain"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:layout_gravity="center"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.raofyp.MainActivity" >
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="[DM]Shami" />
-
-<Button
-    android:id="@+id/button1"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@+id/imageButton1"
-    android:layout_marginTop="20dp"
-    android:drawableLeft="@android:drawable/ic_menu_search"
-    android:padding="16dp"
-    android:text="DINING"
-    android:textSize="24sp" />
-
-<Button
-    android:id="@+id/button2"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignLeft="@+id/button3"
-    android:layout_alignRight="@+id/button1"
-    android:layout_marginTop="20dp"
-    android:drawableLeft="@android:drawable/ic_menu_search"
-    android:padding="16dp"
-    android:layout_centerVertical="true"
-    android:text="Sitting"
-    android:textSize="24sp" />
-<ImageButton
-    android:id="@+id/imageButton1"
-    android:layout_width="50dp"
-    android:layout_height="50dp"
-     android:scaleType="fitCenter"
-    android:layout_alignParentRight="true"
-    android:src="@drawable/setting" />
 
 <Button
     android:id="@+id/button4"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    android:layout_alignRight="@+id/button2"
     android:layout_marginBottom="23dp"
     android:text="Readings" />
 
-<Button
-    android:id="@+id/button3"
+<TextView
+    android:id="@+id/textView3"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:layout_height="wrap_content"
+    android:layout_alignLeft="@+id/textView2"
+    android:layout_below="@+id/textView2"
+    android:layout_marginTop="52dp"
+    android:text="Large Text"
+    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+<TextView
+    android:id="@+id/textView1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:gravity="center"
+    android:layout_alignRight="@+id/textView2"
+    android:layout_marginTop="32dp"
+    android:text="Large Text"
+    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+<TextView
+    android:id="@+id/textView2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignLeft="@+id/button4"
+    android:layout_below="@+id/textView1"
+    android:layout_marginTop="59dp"
+    android:text="Large Text"
+    android:gravity="center"
+    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+<TextView
+    android:id="@+id/textView4"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_alignLeft="@+id/button1"
-    android:layout_alignRight="@+id/button1"
-    android:layout_below="@+id/button1"
-    android:drawableLeft="@android:drawable/ic_menu_search"
-    android:padding="16dp"
-    android:text="BEDROOM"
-    android:textSize="24sp" />
+    android:layout_above="@+id/button4"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="60dp"
+    android:text="Swipe to select Room"
+    android:textAppearance="?android:attr/textAppearanceLarge" />
   
 </RelativeLayout>

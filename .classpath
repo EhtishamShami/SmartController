@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="C:/Users/Shami/workspace/lib/commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Shami/workspace/lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Shami/workspace/lib/fluent-hc-4.5.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Shami/workspace/lib/httpclient-4.5.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Shami/workspace/lib/httpclient-cache-4.5.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Shami/workspace/lib/httpclient-win-4.5.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Shami/workspace/lib/httpcore-4.4.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Shami/workspace/lib/httpmime-4.5.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Shami/workspace/lib/jna-4.1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Shami/workspace/lib/jna-platform-4.1.0.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

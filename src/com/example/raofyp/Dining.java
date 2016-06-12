@@ -2,19 +2,38 @@ package com.example.raofyp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.hardware.SensorManager;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import org.apache.http.HttpResponse;
+////////////////////////////////////////////////////////////////////
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
 ////////////////////////////////////////////////////////////////
+import org.apache.http.protocol.HttpContext;
+
 ///////Samsung APIS Looks......Never seen anything more beautiful then you 
 ////////////////////////////////////////////////////////////////
 import android.support.v7.app.ActionBarActivity;
+import android.transition.Visibility;
+import android.util.Log;
+
 import com.samsung.android.sdk.SsdkUnsupportedException;
 import com.samsung.android.sdk.gesture.Sgesture;
 import com.samsung.android.sdk.gesture.SgestureHand;
@@ -29,28 +48,59 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+///////////////////////////////////////////////////////////////////////////
+///////////I Love u thtas why i respect u////////////////////
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Random;
+
 public class Dining extends Activity implements SensorEventListener  {
 	//////////////////////////////////Variables for gestures
 	private SgestureHand mGestureHand;  
 	private Sgesture mGesture; 
 	private SensorManager mSensorManager;
     ///////////////////////////////////////I could see a sparkle when u looks in my eyes
-	private ProgressBar fan;
 	private RatingBar bulb1;
-	private RatingBar bulb2;
-    ////////////////////////////////////Variables for Sensors
+	SQLiteDatabase mydatabase;
+	////////////////////////////////////Variables for Sensors
 	private Sensor mlight;
 	private Sensor mtemp;
+	TextView fansate;
+	//////////////////////////////////////
+	String Start_Time;
+	String End_Time;
+	float temp;
+	///////////////////////////////////
+	
+	TextView text;
+	TextView fixedtext;
+	CountDownTimer timer;
+	
+	boolean lights;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_dining);
+		lights=false;
+		text=(TextView)findViewById(R.id.textView5);
+		fixedtext=(TextView)findViewById(R.id.textView6);
+		mydatabase= openOrCreateDatabase("Readings",MODE_PRIVATE,null);
+		Calendar cal = Calendar.getInstance();
+	    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+	    Random rand = new Random();
+	    temp = rand.nextInt(50) + 1;
+	    Start_Time=sdf.format(cal.getTime());
 		mSensorManager=(SensorManager)getSystemService(Context.SENSOR_SERVICE);
 		mlight=mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-		
-		fan=(ProgressBar)findViewById(R.id.progressBar1);
-		bulb1=(RatingBar)findViewById(R.id.ratingBar1);
-		bulb2=(RatingBar)findViewById(R.id.ratingBar2);
+		fansate=(TextView)findViewById(R.id.textView2);
+		bulb1=(RatingBar)findViewById(R.id.ratingBar2);
 		mGesture=new Sgesture();
 		try
 		{
@@ -82,14 +132,53 @@ public class Dining extends Activity implements SensorEventListener  {
 	    float lightintensity = event.values[0];  
 		//mydatabase.execSQL("INSERT INTO SensorReading VALUES("+lightintensity+");");
 	 //   System.out.println("Light Sensitivity "+lightintensity);
-	    if(lightintensity<5)
-	    {
+	    if(lightintensity==0 && lights==false)
+	    {   
+	    	text.setVisibility(1);
+	        fixedtext.setVisibility(1);
+	    	lights=true;
+      	    
+	    	new CountDownTimer(10000, 1000) {
+                
+	    	     public void onTick(long millisUntilFinished) {
+	    	         text.setText("seconds remaining: " + millisUntilFinished / 1000);
+	    	     }
+
+	    	     public void onFinish() {
+	    	    	 if(lights==true)
+	    	         {
+	    	    		 HttpAsyncTask hat = new HttpAsyncTask();
+			                hat.execute("http://www.neartechs.com/on.php");
+	    	         text.setText("Lights ON");
+	    	    	 bulb1.setRating(5);         
+	    	         }
+	    	    	 lights=false;
+	    	     }
+	    	  }.start();
+	    	
+	    	//finish();
+	    	
+	    /*	
+	    	Context context = getApplicationContext();
+  	        Toast mytoast=Toast.makeText(context, "Lights are ON", Toast.LENGTH_SHORT);
+  	        mytoast.show();
+  	        Calendar cal = Calendar.getInstance();
+	        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            Start_Time=sdf.format(cal.getTime());   
 	    	bulb1.setRating(5);
-	    	bulb2.setRating(5);
+	    	*/
+	    	
+	    	
 	    }else
-	    {
-	    	bulb1.setRating(0);
-	    	bulb2.setRating(0);
+	    {   //Context context = getApplicationContext();
+	      //  Toast mytoast=Toast.makeText(context, "Lights are OFF", Toast.LENGTH_SHORT);
+	      //  mytoast.show();
+	    //	Calendar cal = Calendar.getInstance();
+	      //  SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            //End_Time=sdf.format(cal.getTime());
+   	   //   mydatabase.execSQL("INSERT INTO Timing VALUES('"+Start_Time+"','"+End_Time+"','BULB');");
+	    //	bulb1.setRating(0);
+	    	
 	    }
 	    // Do something with this sensor data.
 	  }
@@ -123,15 +212,112 @@ public class Dining extends Activity implements SensorEventListener  {
 				     	System.out.println("Gesture SDK Values"); 
 			            System.out.println("Angel = "+info.getAngle());
 			            System.out.println("Speed = "+info.getSpeed());
-			          if(info.getAngle()>150)
+			          if(info.getAngle()>150&& info.getSpeed()>80)
+			          { 
+			        	  Calendar cal = Calendar.getInstance();
+			  	          SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+				          Start_Time=sdf.format(cal.getTime());   
+				          Context context = getApplicationContext();
+			        	  Toast mytoast=Toast.makeText(context, "BULB IS ON", Toast.LENGTH_SHORT);
+			        	  mytoast.show();
+			        	  fansate.setText("Swipe Right To Turn OFF");
+			        	  bulb1.setRating(5);
+			        //	  Uri uri = Uri.parse("http://www.neartechs.com/on.php"); // missing 'http://' will cause crashed
+			      	//	  Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+			      	//	  startActivity(intent);
+			      		  /////////////Lord Jesus Rastafari
+			        	    HttpAsyncTask hat = new HttpAsyncTask();
+			                hat.execute("http://www.neartechs.com/on.php");
+			      		  
+			      		  
+			      		  
+			      		  
+			          }else if(info.getAngle()<150&& info.getSpeed()>80)
+			          {  
+			        	  Calendar cal = Calendar.getInstance();
+		  	              SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+			              End_Time=sdf.format(cal.getTime());
+			        	  Context context = getApplicationContext();
+		        	      Toast mytoast=Toast.makeText(context, "LIGHTS IS OFF", Toast.LENGTH_SHORT);
+		        	      mytoast.show();
+		        	      fansate.setText("Swipe Left to turn ON");
+		        	      mydatabase.execSQL("INSERT INTO Timing VALUES('"+Start_Time+"','"+End_Time+"','BULB');");
+		        	      mydatabase.execSQL("INSERT INTO Fanreadings VALUES('"+Start_Time+"','"+End_Time+"',"+temp+");");
+		        	      bulb1.setRating(0);
+		        	    /*
+		        	      Uri uri = Uri.parse("http://www.neartechs.com/off.php"); // missing 'http://' will cause crashed
+			      		  Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+			      		  lights=false; 
+			      		  startActivity(intent);
+			  */
+		/////////////David MF
+		        	      
+		        	     
+
+		                   HttpAsyncTask hat = new HttpAsyncTask();
+		                   hat.execute("http://www.neartechs.com/off.php");
+
+
+			          }		      		  
+			          
+			          else if(info.getAngle()<150&&info.getSpeed()<80)
 			          {
-			        	  fan.setVisibility(fan.VISIBLE);
-			          }else if(info.getAngle()<150)
-			          {
-			        	  fan.setVisibility(fan.INVISIBLE);
+			        	  finish();
 			          }
 					}
 					}
 				};
+				
+				
+//////////////////////////////////////////////////////////////
+				 public class HttpAsyncTask extends AsyncTask<String, Void, String> {
+
+	                    protected String doInBackground(String... urls) {
+
+	                        return httpRequestResponse(urls[0]);
+	                    }
+	                    // onPostExecute displays the results of the AsyncTask.
+	                    protected void onPostExecute(String result) {
+
+	                    }
+	                }
+
+	            //For HttpAsync Functions: sending requests and receiving responses
+	                public static String httpRequestResponse(String url){
+	                    InputStream inputStream = null;
+	                    String result = "";
+	                    try {
+	                        // create HttpClient
+	                        HttpClient httpclient = new DefaultHttpClient();
+
+	                        // make GET request to the given URL
+	                        HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
+
+	                        // receive response as inputStream
+	                        inputStream = httpResponse.getEntity().getContent();
+
+	                        // convert InputStream to string
+	                        if(inputStream != null)
+	                            result = convertInputStreamToString(inputStream);
+	                        else
+	                            result = "InputStream did not work";
+
+	                    } catch (Exception e) {
+	                        Log.d("InputStream", e.getLocalizedMessage());
+	                    }
+
+	                    return result;
+	                }
+
+	        private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+	                BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+	                String line = "";
+	                String result = "";
+	                while((line = bufferedReader.readLine()) != null)
+	                    result += line;
+
+	                inputStream.close();
+	                return result;
+	            }
 	
 }
